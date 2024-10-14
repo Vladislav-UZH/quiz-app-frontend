@@ -1,9 +1,18 @@
-<script setup></script>
+<script setup lang="ts"></script>
 <template>
-  <footer class="footer">Created by students FIT, Uzhnu, (c)2024</footer>
+  <footer class="footer">
+    Created by students FIT, Uzhnu. (c) {{ new Date().getFullYear() }}
+  </footer>
 </template>
 <style scoped>
 .footer {
-  background-color: ;
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 270px;
+  padding: 15px;
+  color: var(--secondary-color);
 }
 </style>

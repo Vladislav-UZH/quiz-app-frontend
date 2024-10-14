@@ -1,0 +1,13 @@
+:root {
+  --primary-color: #141a33;
+  --secondary-color: #606784;
+  --primary-text-color: #ffffff;
+  --primary-accent-color: #0acbd9;
+  --secondary-accent-color: #0db1bd;
+  /*STYLING*/
+  --transition-duration: 300ms;
+  --transition-timing-function: cubic-bezier(0.89, 0.91, 0, 0.65);
+
+  --transition-effect: var(--transition-duration)
+    var(--transition-timing-function);
+}
