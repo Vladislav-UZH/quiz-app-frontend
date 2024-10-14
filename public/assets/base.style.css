@@ -1,0 +1,10 @@
+:root {
+  --primary-color: #141a33;
+  --secondary-color: #606784;
+  --primary-text-color: #ffffff;
+  --accent-color: #0acbd9;
+}
+
+body {
+  font-family: "Quantico", sans-serif;
+}

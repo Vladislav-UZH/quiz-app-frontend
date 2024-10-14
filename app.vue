@@ -1,3 +1,7 @@
+<script setup>
+import "./public/assets/style.css";
+</script>
+
 <template>
-  <div><NuxtPage /></div>
+  <NuxtLayout> <NuxtPage /></NuxtLayout>
 </template>

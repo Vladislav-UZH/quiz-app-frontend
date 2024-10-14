@@ -1,6 +1,4 @@
 <script setup></script>
 <template>
-  <div>Hello</div>
+  <header><h1>QuizWiz</h1></header>
 </template>
-
-<style scoped></style>
