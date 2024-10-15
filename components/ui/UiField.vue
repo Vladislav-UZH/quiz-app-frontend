@@ -19,6 +19,6 @@ defineProps({ placeholder: { type: String, default: "Enter" } });
 }
 
 .field:focus {
-  outline-color: var(--accent-color);
+  outline-color: var(--primary-accent-color);
 }
 </style>
