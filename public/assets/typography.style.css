@@ -23,3 +23,35 @@
   font-weight: 700;
   font-style: italic;
 }
+
+.headline--xl {
+  font-family: var(--font-family--general);
+  font-style: normal;
+  font-weight: var(--font-weight__bold);
+  font-size: var(--font-size__xl);
+  line-height: var(--line-height__xl);
+
+  letter-spacing: normal;
+  text-transform: uppercase;
+}
+
+.text__title {
+  font-family: var(--font-family--general);
+  font-style: normal;
+  font-weight: var(--font-weight__medium);
+  font-size: var(--font-size__m);
+  line-height: var(--line-height__m);
+
+  letter-spacing: normal;
+  /* text-transform: uppercase; */
+}
+.text__regular {
+  font-family: var(--font-family--general);
+  font-style: normal;
+  font-weight: var(--font-weight__regular);
+  font-size: var(--font-size__s);
+  line-height: var(--line-height__s);
+
+  letter-spacing: normal;
+  text-transform: none;
+}

@@ -1,8 +1,12 @@
 body {
-  font-family: "Quantico", sans-serif;
-  font-weight: 400;
+  font-family: var(--font-family--general);
   font-style: normal;
-  font-size: 12px;
+  font-weight: var(--font-weight__regular);
+  font-size: var(--font-size__s);
+  line-height: var(--line-height__s);
+
+  letter-spacing: normal;
+  text-transform: none;
   background-color: var(--primary-color);
   color: var(--primary-text-color);
 }

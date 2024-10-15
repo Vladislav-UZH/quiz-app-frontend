@@ -3,7 +3,7 @@ defineProps({ placeholder: { type: String, default: "Enter" } });
 </script>
 <template>
   <label>
-    <input name="" class="field" type="text" :placeholder="placeholder" />
+    <input name="code" class="field" type="text" :placeholder="placeholder" />
   </label>
 </template>
 <style scoped>

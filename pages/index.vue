@@ -2,8 +2,8 @@
 <template>
   <div class="container">
     <div class="text-container">
-      <h2>Welcome to quiz area!</h2>
-      <p>Use game code and start play.</p>
+      <h2 class="headline--xl">Welcome to quiz area!</h2>
+      <p class="text__title">Use game code and start play.</p>
     </div>
 
     <div class="base-container">
@@ -19,7 +19,7 @@
   justify-content: center;
   flex-direction: column;
   gap: 20px;
-  padding: 120px;
+  padding: 120px 0;
 }
 .text-container {
   display: flex;
