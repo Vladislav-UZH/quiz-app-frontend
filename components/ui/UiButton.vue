@@ -9,13 +9,14 @@ defineProps({ type: { type: String, default: "button" } });
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 8px 30px;
+  width: 100%;
+  padding: 12px;
   background-color: var(--primary-accent-color);
-  border-radius: 6px;
+  border-radius: 10px;
   border: none;
   outline: transparent;
   color: var(--primary-text-color);
-  text-transform: uppercase;
+  /* text-transform: ; */
   transition: var(--transition-effect);
 }
 .btn:hover {

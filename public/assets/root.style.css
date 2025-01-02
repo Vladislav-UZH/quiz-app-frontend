@@ -1,15 +1,17 @@
 :root {
-  --font-family--general: "Quantico", sans-serif;
-  --font-weight__light: 300;
-  --font-weight__regular: 400;
-  --font-weight__medium: 500;
+  --font-family--general: "Wix Madefor Display", sans-serif;
+  --font-weight__light: 400;
+  --font-weight__regular: 500;
+  --font-weight__medium: 600;
   --font-weight__bold: 700;
   /* COLORS */
-  --primary-color: #141a33;
-  --secondary-color: #606784;
+  --color__black: #090909;
+  --color__dark--light: #151621;
+  --color__gray--dark: #101017;
   --primary-text-color: #ffffff;
-  --primary-accent-color: #0acbd9;
-  --secondary-accent-color: #0db1bd;
+  --secondary-text-color: #87878b;
+  --primary-accent-color: #5d5fe9;
+  --secondary-accent-color: rgba(163, 165, 255, 0.5);
   /*STYLING*/
   --transition-duration: 300ms;
   --transition-timing-function: cubic-bezier(0.89, 0.91, 0, 0.65);
@@ -23,15 +25,15 @@
   --indent__xl: 20px;
   --indent__xxl: 24px;
 
-  --font-size__s: 12px;
+  --font-size__s: 14px;
   --font-size__m: 16px;
-  --font-size__l: 20px;
-  --font-size__xl: 24px;
-  --font-size__xxl: 32px;
+  --font-size__l: 28px;
+  /* --font-size__xl: 24px;
+  --font-size__xxl: 32px; */
 
-  --line-height__s: calc(16 / var(--font-size__s));
+  --line-height__s: calc(20 / var(--font-size__s));
   --line-height__m: calc(20 / var(--font-size__m));
-  --line-height__l: calc(24 / var(--font-size__l));
-  --line-height__xl: calc(28 / var(--font-size__xl));
-  --line-height__xxl: calc(40 / var(--font-size__xxl));
+  --line-height__l: calc(130% / var(--font-size__l));
+  /* --line-height__xl: calc(28 / var(--font-size__xl));
+  --line-height__xxl: calc(40 / var(--font-size__xxl)); */
 }

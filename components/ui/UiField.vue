@@ -1,24 +1,43 @@
 <script setup lang="ts">
-defineProps({ placeholder: { type: String, default: "Enter" } });
+defineProps({
+  label: { type: String, default: "" },
+  placeholder: { type: String, default: "Enter" },
+  name: { type: String, required: true },
+  type: { type: String, default: "text" },
+});
+
+const model = defineModel("model");
 </script>
 <template>
-  <label>
-    <input name="code" class="field" type="text" :placeholder="placeholder" />
+  <label class="label">
+    <span>{{ label }}</span>
+    <input
+      :name="name"
+      class="field"
+      :type="type"
+      :placeholder="placeholder"
+      v-model="model"
+    />
   </label>
 </template>
 <style scoped>
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--indent__min);
+  width: 100%;
+}
 .field {
-  padding: 8px;
-
-  background-color: transparent;
+  padding: 12px 16px;
+  background-color: #1f1f2b;
   color: var(--primary-text-color);
-  outline: var(--secondary-color) solid 1px;
-  border-radius: 6px;
+  outline: transparent solid 1px;
+  border-radius: 8px;
   border: none;
   transition: var(--transition-effect);
 }
 
 .field:focus {
-  outline-color: var(--primary-accent-color);
+  outline-color: var(--secondary-accent-color);
 }
 </style>

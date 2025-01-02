@@ -2,13 +2,13 @@
 import IconQuiz from "/public/svg/icon_quiz.svg";
 </script>
 <template>
-  <header class="header">
+  <!-- <header class="header">
     <router-link to="/" class="app">
       <IconQuiz width="24" height="24" />
       <h1 class="app-name">QuizWiz</h1>
     </router-link>
     <div></div>
-  </header>
+  </header> -->
 </template>
 <style scoped>
 .header {

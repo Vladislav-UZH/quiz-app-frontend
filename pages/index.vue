@@ -1,16 +1,6 @@
-<script setup lang="ts"></script>
+<script setup></script>
 <template>
-  <div class="container">
-    <div class="text-container">
-      <h2 class="headline--xl">Welcome to quiz area!</h2>
-      <p class="text__title">Use game code and start play.</p>
-    </div>
-
-    <div class="base-container">
-      <UiField placeholder="Enter code" />
-      <UiButton>Join</UiButton>
-    </div>
-  </div>
+  <WidgetJoinGame />
 </template>
 
 <style scoped>

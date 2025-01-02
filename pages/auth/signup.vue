@@ -4,37 +4,46 @@ definePageMeta({ layout: "auth" });
 <template>
   <UiBlock class="box">
     <div class="title-box">
-      <h2>Log in to your account</h2>
-      <p class="description">Welcome Back! Please enter your details.</p>
+      <h2>Create an account</h2>
+      <p class="description">We're excited to have you on board</p>
     </div>
     <form class="form">
+      <UiField
+        name="username"
+        type="text"
+        label="Username"
+        placeholder="Enter Username"
+      />
       <UiField
         name="email"
         type="email"
         label="Email"
         placeholder="Enter Email"
       />
-      <div>
-        <UiField
-          name="password"
-          type="password"
-          label="Password"
-          placeholder="Create Password"
-        />
-        <!-- <nuxt-link to="/auth/recovery">Forgot password?</nuxt-link> -->
-      </div>
+      <UiField
+        name="password"
+        type="password"
+        label="Password"
+        placeholder="Create Password"
+      />
+      <UiField
+        name="confirmPassword"
+        type="password"
+        label="Confirm password"
+        placeholder="Confirm Password"
+      />
 
       <UiButton>Start</UiButton>
     </form>
-    <nuxt-link class="sign-up-link" to="/auth/signup">
-      Don`t have an account? <span class="sign-up">Sign up</span>
+    <nuxt-link class="sign-up-link" to="/auth/signin">
+      Already have an account? <span class="sign-up">Log In</span>
     </nuxt-link>
   </UiBlock>
 </template>
 
 <style scoped>
 .box {
-  padding: 40px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   /* align-items: center; */
@@ -49,11 +58,10 @@ definePageMeta({ layout: "auth" });
 .form {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 28px;
 }
 .description {
   text-align: center;
-
   color: var(--secondary-text-color);
 }
 .sign-up-link {

@@ -7,6 +7,7 @@ body {
 
   letter-spacing: normal;
   text-transform: none;
-  background-color: var(--primary-color);
+  background-color: var(--color__black);
+  background-image: url(../img/starry-sky.png);
   color: var(--primary-text-color);
 }
