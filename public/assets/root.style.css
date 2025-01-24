@@ -6,8 +6,12 @@
   --font-weight__bold: 700;
   /* COLORS */
   --color__black: #090909;
+  --color__purple--dark: #12131e;
+  --color__purple--light: #1f1f2b;
+
   --color__dark--light: #151621;
   --color__gray--dark: #101017;
+
   --primary-text-color: #ffffff;
   --secondary-text-color: #87878b;
   --primary-accent-color: #5d5fe9;

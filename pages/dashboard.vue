@@ -1,15 +1,30 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+definePageMeta({
+  layout: false,
+  redirect: "/dashboard/quizzes",
+});
+</script>
 <template>
-  <section>
-    <nav class="vertical-nav">
-      <nuxt-link to="/dashboard/quizzes">My Quizzes</nuxt-link>
-      <nuxt-link to="/dashboard/library">Library</nuxt-link>
-    </nav>
-    <NuxtPage />
+  <section class="dashboard-layout">
+    <WidgetHeader />
+
+    <div class="dashboard-content">
+      <WidgetNavigation />
+
+      <NuxtPage />
+    </div>
+
+    <WidgetFooter />
   </section>
 </template>
 <style scoped>
-.vertical-nav {
-  background-color: #0c0c13;
+.dashboard-layout {
+  height: 100dvh;
+  background-color: var(--color__gray--dark);
+}
+.dashboard-content {
+  display: flex;
+  gap: var(--indent__xxl);
+  height: calc(90dvh);
 }
 </style>

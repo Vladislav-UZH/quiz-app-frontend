@@ -11,12 +11,10 @@ const router = useRouter();
     <UiAppLogo />
     <h3 class="">Enter code!</h3>
     <p class="">Use code to connect to the room</p>
-    <UiField
-      v-model:model="joinGame.code"
-      label="Code"
-      placeholder="Enter code"
-    />
-    <UiButton @click="router.push(`/room`)" />
+    <form>
+      <UiField name="code" label="Code" placeholder="Enter code" />
+      <UiButton type="submit" />
+    </form>
   </UiBlock>
 </template>
 

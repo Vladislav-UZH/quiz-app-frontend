@@ -1,6 +1,6 @@
 <template>
   <div class="layout">
-    <WidgetHeader />
+    <!-- <WidgetHeader /> -->
     <slot />
     <WidgetFooter />
   </div>

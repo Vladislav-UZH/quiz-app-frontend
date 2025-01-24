@@ -9,7 +9,7 @@ defineProps({ type: { type: String, default: "button" } });
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  /* width: 100%; */
   padding: 12px;
   background-color: var(--primary-accent-color);
   border-radius: 10px;

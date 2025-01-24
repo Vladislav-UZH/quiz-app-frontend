@@ -1,12 +1,14 @@
 <script setup lang="ts">
-defineProps({
+import { useField } from "vee-validate";
+
+const props = defineProps({
   label: { type: String, default: "" },
   placeholder: { type: String, default: "Enter" },
   name: { type: String, required: true },
   type: { type: String, default: "text" },
 });
 
-const model = defineModel("model");
+const field = useField(() => props.name);
 </script>
 <template>
   <label class="label">
@@ -16,7 +18,7 @@ const model = defineModel("model");
       class="field"
       :type="type"
       :placeholder="placeholder"
-      v-model="model"
+      v-model="field.value.value"
     />
   </label>
 </template>

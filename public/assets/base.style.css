@@ -11,3 +11,7 @@ body {
   background-image: url(../img/starry-sky.png);
   color: var(--primary-text-color);
 }
+
+::-webkit-scrollbar {
+  display: none;
+}
