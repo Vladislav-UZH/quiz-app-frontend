@@ -1,4 +1,11 @@
-<script setup></script>
+<script setup>
+import { authApi } from "~/shared";
+
+onBeforeMount(() => {
+  console.log("hej");
+  authApi.activateInterceptors();
+});
+</script>
 <template>
   <WidgetJoinGame />
 </template>

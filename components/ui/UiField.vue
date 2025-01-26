@@ -27,7 +27,6 @@ const field = useField(() => props.name);
   display: flex;
   flex-direction: column;
   gap: var(--indent__min);
-  width: 100%;
 }
 .field {
   padding: 12px 16px;

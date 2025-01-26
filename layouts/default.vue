@@ -8,8 +8,8 @@
 <style scoped>
 .layout {
   display: flex;
-  /* justify-content: center;
-  align-items: center; */
+  justify-content: center;
+  align-items: center;
   position: relative;
   height: 100dvh;
   padding: 16px;

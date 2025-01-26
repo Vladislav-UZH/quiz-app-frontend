@@ -1,37 +1,77 @@
 <script lang="ts" setup>
 import IconMenu from "@/public/svg/icon_menu.svg";
-const userQuizzes = [
-  {
-    id: 1,
-    name: "QuizTopic",
-    description: "Some descrption",
-    questionQuantity: 15,
-  },
-  {
-    id: 2,
-    name: "QuizTopic",
-    description: "Some descrption",
-    questionQuantity: 15,
-  },
-  {
-    id: 3,
-    name: "QuizTopic",
-    description: "Some descrption",
-    questionQuantity: 15,
-  },
-  {
-    id: 4,
-    name: "QuizTopic",
-    description: "Some descrption",
-    questionQuantity: 15,
-  },
-];
+import { useForm } from "vee-validate";
+import { BaseApi } from "~/shared";
+
+definePageMeta({ middleware: ["auth"] });
+
+// const userQuizzes = [
+//   {
+//     id: 1,
+//     name: "QuizTopic",
+//     description: "Some descrption",
+//     questionQuantity: 15,
+//   },
+//   {
+//     id: 2,
+//     name: "QuizTopic",
+//     description: "Some descrption",
+//     questionQuantity: 15,
+//   },
+//   {
+//     id: 3,
+//     name: "QuizTopic",
+//     description: "Some descrption",
+//     questionQuantity: 15,
+//   },
+//   {
+//     id: 4,
+//     name: "QuizTopic",
+//     description: "Some descrption",
+//     questionQuantity: 15,
+//   },
+// ];
+
+const userQuizzes = useState<{ id: number; title: string; questions: [] }[]>(
+  "quizzes",
+  () => []
+);
+const quizModal = useModal();
+
+const { handleSubmit } = useForm();
+const api = new BaseApi();
+
+const onSubmit = handleSubmit(async ({ quizName }) => {
+  const router = useRouter();
+
+  const api = new BaseApi();
+
+  const data = await api.POST({
+    path: "/api/quizzes",
+    data: { title: quizName },
+  });
+
+  const quiz = { id: null, questions: [], title: "" };
+  console.log(data);
+});
+
+onBeforeMount(async () => {
+  const data = await api.GET<{ id: number; title: string; questions: [] }[]>({
+    path: "/api/quizzes",
+  });
+  console.log(data);
+
+  userQuizzes.value = data;
+});
 </script>
 <template>
   <div class="content">
-    <div class="">
+    <div>
       <h2>My quizzes</h2>
-      <UiField name="searchValue" />
+      <div class="panel">
+        <UiField name="searchValue" />
+        <UiButton @click="quizModal.toggleModal()"> New Quiz</UiButton>
+      </div>
     </div>
 
     <ul class="quiz-list">
@@ -39,10 +79,10 @@ const userQuizzes = [
         <NuxtLink :to="`/dashboard/quizzes/${quiz.id}`" class="quiz-header">
           <UiImage width="240px" height="160px" />
 
-          <p class="topic">{{ quiz.name }}</p>
+          <p class="topic">{{ quiz.title }}</p>
         </NuxtLink>
 
-        <p class="questions-quantity">{{ quiz.questionQuantity }} questions</p>
+        <p class="questions-quantity">{{ quiz.questions.length }} questions</p>
 
         <div class="info-box">
           <div class="user-info-box">
@@ -54,6 +94,18 @@ const userQuizzes = [
         </div>
       </li>
     </ul>
+
+    <UiModal
+      title="Create Quiz"
+      :is-open="quizModal.isOpen.value"
+      @close="quizModal.toggleModal()"
+    >
+      <form class="quiz-form" @submit="onSubmit">
+        <UiField name="quizName" placeholder="Enter Title" />
+
+        <UiButton type="submit"> Create </UiButton>
+      </form>
+    </UiModal>
   </div>
 </template>
 
@@ -64,6 +116,17 @@ const userQuizzes = [
   justify-content: flex-start;
   gap: var(--indent__l);
 }
+.panel {
+  display: flex;
+  justify-content: space-between;
+}
+
+.quiz-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--indent__l);
+}
+
 .quiz-list {
   display: flex;
   flex-wrap: wrap;

@@ -1,5 +1,20 @@
 <script setup lang="ts">
-definePageMeta({ layout: "auth" });
+import { useForm } from "vee-validate";
+import { useAuthFeatures } from "~/features/auth";
+
+definePageMeta({ layout: "auth", middleware: ["guest"] });
+
+const { login } = useAuthFeatures();
+const { handleSubmit } = useForm();
+
+const onSubmit = handleSubmit(async (values) => {
+  try {
+    await login(values);
+  } catch (e) {
+    alert("Invalid credentials or server issue");
+    // console.log(e);
+  }
+});
 </script>
 <template>
   <UiBlock class="box">
@@ -7,24 +22,24 @@ definePageMeta({ layout: "auth" });
       <h2>Log in to your account</h2>
       <p class="description">Welcome Back! Please enter your details.</p>
     </div>
-    <form class="form">
+    <form class="form" @submit="onSubmit">
       <UiField
-        name="email"
-        type="email"
-        label="Email"
-        placeholder="Enter Email"
+        name="username"
+        type="text"
+        label="Username"
+        placeholder="Enter Username"
       />
       <div>
         <UiField
           name="password"
           type="password"
           label="Password"
-          placeholder="Create Password"
+          placeholder="Enter Password"
         />
         <!-- <nuxt-link to="/auth/recovery">Forgot password?</nuxt-link> -->
       </div>
 
-      <UiButton>Start</UiButton>
+      <UiButton type="submit">Start</UiButton>
     </form>
     <nuxt-link class="sign-up-link" to="/auth/signup">
       Don`t have an account? <span class="sign-up">Sign up</span>

@@ -3,6 +3,10 @@ import IconBack from "../../../../public/svg/icon_arrow_left.svg";
 import IconTrue from "../../../../public/svg/icon_true.svg";
 import IconFalse from "../../../../public/svg/icon_false.svg";
 
+definePageMeta({ middleware: ["auth"] });
+
+const isEditMode = useState("editMode", () => false);
+
 const quizName = "Quiz TopicQuiz Topic";
 
 const { chooseCurrent, current } = useCurrent();
@@ -24,6 +28,10 @@ function handleStart() {
   const roomId = "54545";
   router.push(`/room/${roomId}/lobby`);
 }
+
+function toggleEditMode() {
+  isEditMode.value = !isEditMode.value;
+}
 </script>
 
 <template>
@@ -35,7 +43,9 @@ function handleStart() {
       <h2>{{ quizName }}</h2>
 
       <div class="header-buttons">
-        <UiButton> Edit Quiz</UiButton>
+        <!-- <UiButton @click="toggleEditMode()">
+          {{ isEditMode ? "Stop Edit" : "Edit" }} Quiz</UiButton
+        > -->
         <UiButton @click="handleStart()">Start it up</UiButton>
       </div>
     </div>
@@ -52,7 +62,13 @@ function handleStart() {
         >
           <div class="question-info">
             <span class="question-number">{{ index + 1 }} question</span>
-            <p class="question-text">{{ question.text }}</p>
+            <div>
+              <p v-if="!isEditMode" class="question-text">
+                {{ question.text }}
+              </p>
+
+              <UiField name="question" v-else />
+            </div>
           </div>
           <UiImage />
         </div>

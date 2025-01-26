@@ -21,5 +21,9 @@ export default defineNuxtConfig({
       ],
     },
   },
+  modules: ["@pinia/nuxt"],
   vite: { plugins: [svgLoader()] },
+  ssr: false,
+
+  // runtimeConfig: { baseApiUrl: process.env.BASE_API_URL },
 });
