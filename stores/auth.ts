@@ -17,7 +17,7 @@ export const useAuthStore = defineStore("auth", {
   }),
 
   actions: {
-    getAuthToken() {
+    getAuthToken(): string | null {
       const localStorageToken = localStorage.getItem(ACCESS_TOKEN_KEY);
 
       if (!localStorageToken) {

@@ -12,24 +12,24 @@ watchEffect(() => console.log(props.isOpen));
 </script>
 
 <template>
-  <ClientOnly>
-    <Teleport to="#teleports">
-      <div v-if="isOpen" class="backdrop">
-        <div class="modal">
-          <div class="modal-header">
-            <h3>{{ title }}</h3>
+  <!-- <ClientOnly> -->
+  <Teleport to="#teleports">
+    <div v-if="isOpen" class="backdrop">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>{{ title }}</h3>
 
-            <button class="close-modal" type="button" @click="emit('close')">
-              <IconClose />
-            </button>
-          </div>
-          <div class="modal-content">
-            <slot></slot>
-          </div>
+          <button class="close-modal" type="button" @click="emit('close')">
+            <IconClose />
+          </button>
+        </div>
+        <div class="modal-content">
+          <slot></slot>
         </div>
       </div>
-    </Teleport>
-  </ClientOnly>
+    </div>
+  </Teleport>
+  <!-- </ClientOnly> -->
 </template>
 
 <style scoped>

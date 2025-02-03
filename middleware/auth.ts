@@ -1,20 +1,19 @@
-import { authApi } from "~/shared";
-
 export default defineNuxtRouteMiddleware(async (to, from) => {
-  console.log("hello");
-
+  const loginPath = "/auth/signin";
+  const { $api } = useNuxtApp();
   const store = useAuthStore();
 
-  if (store.user.username && store.getAuthToken()) {
+  if (store.getAuthToken()) {
     try {
-      await authApi.current();
+      await $api.auth.current();
     } catch (e) {
-      return abortNavigation();
+      if (from.path !== loginPath) {
+        return navigateTo(loginPath);
+      }
+      return abortNavigation("Server error");
     }
     return;
   }
-
-  const loginPath = "/auth/signin";
 
   if (from.path !== loginPath) {
     return navigateTo(loginPath);

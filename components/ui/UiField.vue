@@ -6,6 +6,7 @@ const props = defineProps({
   placeholder: { type: String, default: "Enter" },
   name: { type: String, required: true },
   type: { type: String, default: "text" },
+  checked: { type: Boolean, default: false },
 });
 
 const field = useField(() => props.name);
@@ -18,6 +19,7 @@ const field = useField(() => props.name);
       class="field"
       :type="type"
       :placeholder="placeholder"
+      :checked="checked"
       v-model="field.value.value"
     />
   </label>

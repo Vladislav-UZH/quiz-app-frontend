@@ -1,106 +1,154 @@
 <script lang="ts" setup>
+import { useForm } from "vee-validate";
 import IconBack from "../../../../public/svg/icon_arrow_left.svg";
-import IconTrue from "../../../../public/svg/icon_true.svg";
-import IconFalse from "../../../../public/svg/icon_false.svg";
+import { useQuizFeatures } from "~/features/quiz";
 
 definePageMeta({ middleware: ["auth"] });
 
-const isEditMode = useState("editMode", () => false);
-
-const quizName = "Quiz TopicQuiz Topic";
-
-const { chooseCurrent, current } = useCurrent();
+const { getIsCurrent, toggleCurrent } = useCurrent<number>("currentQuestion");
+const { chooseCurrent } = useCurrent<number>("currentOption");
 
 const router = useRouter();
-const questions = [
-  { text: "Some text?" },
-  { text: "Some text?" },
-  { text: "Some text?" },
-];
-const points = [
-  { text: "Some text", isTrue: false },
-  { text: "Some text", isTrue: true },
-  { text: "Some text", isTrue: false },
-  { text: "Some text", isTrue: false },
-];
+const route = useRoute();
+const quizStore = useQuizStore();
+const { createQuizQuestion, createQuestionOption, setCurrentQuiz } =
+  useQuizFeatures();
+
+const questionModal = useModal("questionModal");
+const optionModal = useModal("optionModal");
+
+onBeforeMount(async () => {
+  await setCurrentQuiz(Number(route.params.quizId));
+});
 
 function handleStart() {
   const roomId = "54545";
   router.push(`/room/${roomId}/lobby`);
 }
 
-function toggleEditMode() {
-  isEditMode.value = !isEditMode.value;
+async function handleCreateQuestion({ questionText }) {
+  try {
+    const question = {
+      text: questionText,
+      quizStackId: quizStore.currentQuiz.id,
+    };
+
+    await createQuizQuestion(question);
+
+    console.log(question);
+  } catch (e) {
+    console.log(e);
+  }
+}
+async function handleCreateOption({ optionText, optionCorrect }) {
+  try {
+    const option = {
+      questionId: quizStore.currentQuestion.id,
+      correct: optionCorrect,
+      text: optionText,
+    };
+
+    await createQuestionOption(option);
+  } catch (e) {
+    console.log(e);
+  }
 }
 </script>
 
 <template>
-  <div class="setup-box">
-    <NuxtLink to="/dashboard/quizzes" class="back-link">
-      <IconBack /><span> Back</span>
-    </NuxtLink>
-    <div class="setup-header">
-      <h2>{{ quizName }}</h2>
+  <div class="wrapper">
+    <div class="setup-box">
+      <NuxtLink to="/dashboard/quizzes" class="back-link">
+        <IconBack /> <span> Back</span>
+      </NuxtLink>
+      <div class="setup-header">
+        <h2>{{ quizStore.currentQuiz.title }}</h2>
 
-      <div class="header-buttons">
-        <!-- <UiButton @click="toggleEditMode()">
-          {{ isEditMode ? "Stop Edit" : "Edit" }} Quiz</UiButton
-        > -->
-        <UiButton @click="handleStart()">Start it up</UiButton>
+        <div class="header-buttons">
+          <UiButton
+            v-show="quizStore.currentQuiz.questions.length"
+            @click="questionModal.toggleModal()"
+          >
+            New Q
+          </UiButton>
+          <UiButton @click="handleStart()">Start it up</UiButton>
+        </div>
       </div>
-    </div>
 
-    <ul class="question-list">
-      <li
-        v-for="(question, index) in questions"
-        :key="index"
-        class="question-item"
-      >
-        <div
-          class="question-box"
-          :class="{ 'question-box--active': index % 2 === 0 }"
-        >
-          <div class="question-info">
-            <span class="question-number">{{ index + 1 }} question</span>
-            <div>
-              <p v-if="!isEditMode" class="question-text">
-                {{ question.text }}
-              </p>
+      <!-- EMPTY QUESTIONS -->
+      <template v-if="!quizStore.currentQuiz.questions.length">
+        <UiButton @click="questionModal.toggleModal()">
+          Create Question
+        </UiButton>
+      </template>
 
-              <UiField name="question" v-else />
-            </div>
-          </div>
-          <UiImage />
-        </div>
+      <!--  QUESTIONS -->
+      <template v-else>
+        {{ quizStore.currentQuestion }}
+        <ul class="question-list">
+          <li
+            v-for="(question, index) in quizStore.currentQuiz.questions"
+            :key="index"
+          >
+            <UiQuestion
+              :index="index + 1"
+              :text="question.text"
+              :isOpen="false"
+              @click="toggleCurrent(question.id)"
+            />
 
-        <div class="point-list-container">
-          <ul class="point-list">
-            <li
-              class="point-item"
-              v-for="(point, index) in points"
-              :key="index"
+            <div
+              v-if="getIsCurrent(question.id) || !question.options"
+              class="options-list-container"
             >
-              <div class="point-info">
-                <span class="point-circle"></span>
-                <p class="point-text">{{ point.text }}</p>
-              </div>
-              <span>
-                <IconTrue
-                  v-if="point.isTrue"
-                  class="icon-true"
-                  viewBox="0 0 20 20"
-                />
-                <IconFalse v-else class="icon-false" width="20" height="20" />
-              </span>
-            </li>
-          </ul>
-        </div>
-      </li>
-    </ul>
+              <UiButton
+                @click="
+                  optionModal.toggleModal(),
+                    quizStore.setCurrentQuestion(question)
+                "
+              >
+                Create Option
+              </UiButton>
+              <ul class="options-list">
+                <li v-for="(option, index) in question.options" :key="index">
+                  <UiOption :text="option.text" :isTrue="option.correct" />
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+        <UiModal
+          title="Create Option"
+          :isOpen="optionModal.isOpen.value"
+          @close="optionModal.toggleModal()"
+        >
+          <UiForm class="options-form" @form="handleCreateOption">
+            <span class="options-form-fields">
+              <UiField name="optionText" placeholder="Enter option" />
+              <UiField name="optionCorrect" type="checkbox" label="Is true" />
+            </span>
+            <UiButton type="submit">Save</UiButton>
+          </UiForm>
+        </UiModal>
+      </template>
+    </div>
+    <UiModal
+      title="Create Question"
+      :isOpen="questionModal.isOpen.value"
+      @close="questionModal.toggleModal()"
+    >
+      <UiForm class="question-form" @form="handleCreateQuestion">
+        <UiField name="questionText" placeholder="Enter Question" />
+        <UiButton type="submit">Save</UiButton>
+      </UiForm>
+    </UiModal>
   </div>
 </template>
 
 <style scoped>
+.wrapper {
+  width: 100%;
+}
 .setup-box {
   display: flex;
   flex-direction: column;
@@ -135,65 +183,31 @@ function toggleEditMode() {
   display: flex;
   flex-direction: column;
 }
-.question-box {
-  display: flex;
-  width: 100%;
-  padding: var(--indent__xl);
-  border-radius: 8px;
-  justify-content: space-between;
-  background-color: var(--color__dark--light);
-}
-.question-box--active {
-  background-color: var(--color__purple--dark);
-}
-.question-info {
-  display: flex;
-  flex-direction: column;
-  gap: var(--indent__s);
-}
-.question-number {
-  color: var(--secondary-text-color);
-}
 
-.question-text {
-}
-
-.point-list-container {
+.options-list-container {
+  display: flex;
+  justify-content: center;
   padding: var(--indent__m);
   background-color: var(--color__purple--light);
 }
-.point-list {
+.options-list {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
-.point-item {
+.question-form {
   display: flex;
-  justify-content: space-between;
-  padding: var(--indent__xl);
-  border-radius: 8px;
-  background-color: var(--color__dark--light);
+  flex-direction: column;
+  gap: var(--indent__m);
 }
-.point-info {
+.options-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--indent__m);
+}
+.options-form-fields {
   display: flex;
   align-items: center;
-  gap: var(--indent__l);
-}
-.point-text {
-}
-
-.point-circle {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: pink;
-}
-
-.icon-true {
-  /* fill: green; */
-  stroke: green;
-}
-.icon-false {
-  fill: rgb(151, 21, 21);
+  gap: var(--indent__m);
 }
 </style>

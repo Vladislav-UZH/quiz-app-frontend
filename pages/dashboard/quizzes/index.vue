@@ -1,67 +1,30 @@
 <script lang="ts" setup>
 import IconMenu from "@/public/svg/icon_menu.svg";
 import { useForm } from "vee-validate";
-import { BaseApi } from "~/shared";
+import { useQuizFeatures } from "~/features/quiz";
 
 definePageMeta({ middleware: ["auth"] });
 
-// const userQuizzes = [
-//   {
-//     id: 1,
-//     name: "QuizTopic",
-//     description: "Some descrption",
-//     questionQuantity: 15,
-//   },
-//   {
-//     id: 2,
-//     name: "QuizTopic",
-//     description: "Some descrption",
-//     questionQuantity: 15,
-//   },
-//   {
-//     id: 3,
-//     name: "QuizTopic",
-//     description: "Some descrption",
-//     questionQuantity: 15,
-//   },
-//   {
-//     id: 4,
-//     name: "QuizTopic",
-//     description: "Some descrption",
-//     questionQuantity: 15,
-//   },
-// ];
-
-const userQuizzes = useState<{ id: number; title: string; questions: [] }[]>(
-  "quizzes",
-  () => []
-);
+const router = useRouter();
+const quizStore = useQuizStore();
 const quizModal = useModal();
-
 const { handleSubmit } = useForm();
-const api = new BaseApi();
-
-const onSubmit = handleSubmit(async ({ quizName }) => {
-  const router = useRouter();
-
-  const api = new BaseApi();
-
-  const data = await api.POST({
-    path: "/api/quizzes",
-    data: { title: quizName },
-  });
-
-  const quiz = { id: null, questions: [], title: "" };
-  console.log(data);
-});
+const { getAllQuizzes, createQuiz, setCurrentQuiz } = useQuizFeatures();
 
 onBeforeMount(async () => {
-  const data = await api.GET<{ id: number; title: string; questions: [] }[]>({
-    path: "/api/quizzes",
-  });
-  console.log(data);
+  try {
+    await getAllQuizzes();
+  } catch (e) {
+    alert("Something went wrong");
+  }
+});
 
-  userQuizzes.value = data;
+const onSubmit = handleSubmit(async ({ quizName }) => {
+  try {
+    await createQuiz({ title: quizName });
+  } catch (e) {
+    alert("Something went wrong");
+  }
 });
 </script>
 <template>
@@ -75,8 +38,16 @@ onBeforeMount(async () => {
     </div>
 
     <ul class="quiz-list">
-      <li class="quiz-item" v-for="(quiz, index) in userQuizzes" :key="index">
-        <NuxtLink :to="`/dashboard/quizzes/${quiz.id}`" class="quiz-header">
+      <li
+        class="quiz-item"
+        v-for="(quiz, index) in quizStore.quizzes"
+        :key="index"
+      >
+        <NuxtLink
+          :to="`/dashboard/quizzes/${quiz.id}`"
+          class="quiz-header"
+          @click="setCurrentQuiz(quiz.id)"
+        >
           <UiImage width="240px" height="160px" />
 
           <p class="topic">{{ quiz.title }}</p>

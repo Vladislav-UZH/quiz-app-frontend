@@ -1,20 +1,12 @@
-import { authApi } from "~/shared";
-useAuthStore;
 export function useAuthFeatures() {
+  const { $api } = useNuxtApp();
+
   const router = useRouter();
 
   const store = useAuthStore();
 
-  const decorator = (handler: () => Promise<unknown>) => {
-    try {
-      return async (value) => await handler(value);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   const register = async ({ username, password }) => {
-    const data = await authApi.register({ username, password });
+    const data = await $api.auth.register({ username, password });
 
     store.setUser({
       username: data.user.userName,
@@ -28,7 +20,7 @@ export function useAuthFeatures() {
   };
 
   const login = async ({ username, password }) => {
-    const data = await authApi.login({ username, password });
+    const data = await $api.auth.login({ username, password });
 
     store.setUser({
       username: data.user.userName,
@@ -41,7 +33,7 @@ export function useAuthFeatures() {
     router.push("/dashboard");
   };
   const logout = async () => {
-    await authApi.logout();
+    await $api.auth.logout();
 
     store.$reset();
     router.push("/auth/signin");
@@ -58,10 +50,5 @@ export function useAuthFeatures() {
     login,
     logout,
     refresh,
-
-    // register: decorator(register),
-    // login: decorator(login),
-    // logout: decorator(logout),
-    // refresh: decorator(refresh),
   };
 }

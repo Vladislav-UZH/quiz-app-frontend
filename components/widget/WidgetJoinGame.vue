@@ -11,7 +11,7 @@ const router = useRouter();
     <UiAppLogo />
     <h3 class="">Enter code!</h3>
     <p class="">Use code to connect to the room</p>
-    <form>
+    <form class="form">
       <UiField name="code" label="Code" placeholder="Enter code" />
       <UiButton type="submit" />
     </form>
@@ -25,5 +25,10 @@ const router = useRouter();
   flex-direction: column;
   align-items: center;
   gap: 18px;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--indent__m);
 }
 </style>

@@ -1,10 +1,5 @@
 <script setup>
-import { authApi } from "~/shared";
-
-onBeforeMount(() => {
-  console.log("hej");
-  authApi.activateInterceptors();
-});
+definePageMeta({ redirect: "/dashboard" });
 </script>
 <template>
   <WidgetJoinGame />
