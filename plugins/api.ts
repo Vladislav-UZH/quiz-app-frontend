@@ -1,5 +1,6 @@
 import { BaseApi } from "~/shared";
 import { AuthApi } from "~/shared/api/auth";
+import { GameApi } from "~/shared/api/game";
 import { QuizApi } from "~/shared/api/quiz";
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -23,6 +24,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         base: new BaseApi(),
         auth: new AuthApi(new BaseApi()),
         quiz: new QuizApi(new BaseApi()),
+        game: new GameApi(new BaseApi()),
       },
     },
   };

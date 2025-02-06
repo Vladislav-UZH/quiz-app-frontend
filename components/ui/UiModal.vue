@@ -61,4 +61,7 @@ watchEffect(() => console.log(props.isOpen));
 .modal-content {
   margin: 10px 0 0 0;
 }
+.close-modal {
+  padding-left: 24px;
+}
 </style>

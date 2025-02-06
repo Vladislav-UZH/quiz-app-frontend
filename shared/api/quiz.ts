@@ -14,7 +14,11 @@ export class QuizApi {
       path: "/api/quizzes ",
     });
   }
-  //   async getQuiz() {}
+  async getOneQuiz(id: number) {
+    return this.baseApi.GET<{ id: number; title: string; questions: [] }>({
+      path: `/api/quizzes/${id}`,
+    });
+  }
   //   async deleteQuiz() {}
 
   async createQuestion({ quizStackId, text }) {

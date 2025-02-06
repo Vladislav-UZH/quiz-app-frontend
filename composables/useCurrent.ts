@@ -1,8 +1,9 @@
 export default function <T>(
   name: string = "current",
-  handler: () => void = () => {}
+  handler: () => void = () => {},
+  initial: T | null = null
 ) {
-  const current = useState<T | null>(name);
+  const current = useState<T | null>(name, () => initial);
 
   function chooseCurrent(newItem: T) {
     current.value = newItem;
@@ -10,12 +11,15 @@ export default function <T>(
   }
 
   function toggleCurrent(newItem: T) {
-    if (current.value) {
-      current.value = null;
-
+    if (current.value === newItem) {
       if (current.value !== newItem) {
         current.value = newItem;
+        return;
       }
+      current.value = null;
+
+      handler();
+
       return;
     }
     current.value = newItem;

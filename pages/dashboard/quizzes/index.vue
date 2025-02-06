@@ -5,15 +5,14 @@ import { useQuizFeatures } from "~/features/quiz";
 
 definePageMeta({ middleware: ["auth"] });
 
-const router = useRouter();
 const quizStore = useQuizStore();
 const quizModal = useModal();
 const { handleSubmit } = useForm();
-const { getAllQuizzes, createQuiz, setCurrentQuiz } = useQuizFeatures();
+const { quiz, question } = useQuizFeatures();
 
 onBeforeMount(async () => {
   try {
-    await getAllQuizzes();
+    await quiz.getAll();
   } catch (e) {
     alert("Something went wrong");
   }
@@ -21,7 +20,7 @@ onBeforeMount(async () => {
 
 const onSubmit = handleSubmit(async ({ quizName }) => {
   try {
-    await createQuiz({ title: quizName });
+    await quiz.create({ title: quizName });
   } catch (e) {
     alert("Something went wrong");
   }
@@ -46,7 +45,7 @@ const onSubmit = handleSubmit(async ({ quizName }) => {
         <NuxtLink
           :to="`/dashboard/quizzes/${quiz.id}`"
           class="quiz-header"
-          @click="setCurrentQuiz(quiz.id)"
+          @click="quizStore.quiz.updateCurrentQuiz(quiz.id, quiz)"
         >
           <UiImage width="240px" height="160px" />
 

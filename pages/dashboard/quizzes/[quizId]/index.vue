@@ -5,25 +5,34 @@ import { useQuizFeatures } from "~/features/quiz";
 
 definePageMeta({ middleware: ["auth"] });
 
+const MAX_OPTIONS = 4;
 const { getIsCurrent, toggleCurrent } = useCurrent<number>("currentQuestion");
 const { chooseCurrent } = useCurrent<number>("currentOption");
 
 const router = useRouter();
 const route = useRoute();
 const quizStore = useQuizStore();
-const { createQuizQuestion, createQuestionOption, setCurrentQuiz } =
-  useQuizFeatures();
+const { $api } = useNuxtApp();
+const quizApi = $api.quiz;
+const features = useQuizFeatures();
 
 const questionModal = useModal("questionModal");
 const optionModal = useModal("optionModal");
 
 onBeforeMount(async () => {
-  await setCurrentQuiz(Number(route.params.quizId));
+  try {
+    const currentQuiz = await quizApi.getOneQuiz(Number(route.params.quizId));
+
+    quizStore.quiz.updateCurrentQuiz(currentQuiz.id, currentQuiz);
+  } catch (e) {
+    console.log(e);
+    alert("Something Went wrong");
+  }
 });
 
 function handleStart() {
   const roomId = "54545";
-  router.push(`/room/${roomId}/lobby`);
+  router.push(`/room/${"null"}/quiz/${quizStore.currentQuiz.id}`);
 }
 
 async function handleCreateQuestion({ questionText }) {
@@ -33,9 +42,10 @@ async function handleCreateQuestion({ questionText }) {
       quizStackId: quizStore.currentQuiz.id,
     };
 
-    await createQuizQuestion(question);
+    await features.question.create(question);
 
-    console.log(question);
+    questionModal.toggleModal();
+    // console.log(question);
   } catch (e) {
     console.log(e);
   }
@@ -48,7 +58,9 @@ async function handleCreateOption({ optionText, optionCorrect }) {
       text: optionText,
     };
 
-    await createQuestionOption(option);
+    await features.option.create(option);
+
+    optionModal.toggleModal();
   } catch (e) {
     console.log(e);
   }
@@ -84,7 +96,6 @@ async function handleCreateOption({ optionText, optionCorrect }) {
 
       <!--  QUESTIONS -->
       <template v-else>
-        {{ quizStore.currentQuestion }}
         <ul class="question-list">
           <li
             v-for="(question, index) in quizStore.currentQuiz.questions"
@@ -93,22 +104,27 @@ async function handleCreateOption({ optionText, optionCorrect }) {
             <UiQuestion
               :index="index + 1"
               :text="question.text"
-              :isOpen="false"
+              :isOpen="getIsCurrent(question.id)"
               @click="toggleCurrent(question.id)"
             />
 
             <div
-              v-if="getIsCurrent(question.id) || !question.options"
+              v-if="getIsCurrent(question.id) || !question.options.length"
               class="options-list-container"
             >
               <UiButton
+                v-show="MAX_OPTIONS > question.options.length"
                 @click="
                   optionModal.toggleModal(),
-                    quizStore.setCurrentQuestion(question)
+                    quizStore.question.updateCurrentQuestion(
+                      question.quizStackId,
+                      question
+                    )
                 "
               >
                 Create Option
               </UiButton>
+
               <ul class="options-list">
                 <li v-for="(option, index) in question.options" :key="index">
                   <UiOption :text="option.text" :isTrue="option.correct" />
@@ -118,7 +134,12 @@ async function handleCreateOption({ optionText, optionCorrect }) {
           </li>
         </ul>
         <UiModal
-          title="Create Option"
+          :title="`Create option for question ${
+            1 +
+            quizStore.currentQuiz.questions.findIndex(
+              (el) => el.id === quizStore.currentQuestion.id
+            )
+          }`"
           :isOpen="optionModal.isOpen.value"
           @close="optionModal.toggleModal()"
         >
@@ -133,7 +154,7 @@ async function handleCreateOption({ optionText, optionCorrect }) {
       </template>
     </div>
     <UiModal
-      title="Create Question"
+      title="Create question"
       :isOpen="questionModal.isOpen.value"
       @close="questionModal.toggleModal()"
     >
@@ -178,6 +199,7 @@ async function handleCreateOption({ optionText, optionCorrect }) {
   background-color: var(--color__dark--light);
   border-radius: 8px;
   overflow-y: auto;
+  max-height: 700px;
 }
 .question-item {
   display: flex;
@@ -186,7 +208,8 @@ async function handleCreateOption({ optionText, optionCorrect }) {
 
 .options-list-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column-reverse;
+  gap: var(--indent__m);
   padding: var(--indent__m);
   background-color: var(--color__purple--light);
 }

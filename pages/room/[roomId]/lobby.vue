@@ -1,26 +1,30 @@
 <script setup>
 useHead({ title: "QuizWiz - Room" });
 
-import IconCopy from "../../public/svg/icon_copy.svg";
 import IconUserPlug from "../../public/svg/icon_user_plug.svg";
 const route = useRoute();
-const roomId = route.params?.id;
+const router = useRouter();
+const roomId = route.params?.roomId;
 const currentUser = { username: "ASTRA" };
-const users = [{ username: "ASTRA" }];
+// const users = [{ username: "ASTRA" }];
+
+// onMounted(() => {
+//   router.push(`/room/${roomId}/game`);
+// });
 </script>
 <template>
   <UiBlock class="users-block">
     <UiAppLogo />
     <div class="room-info">
       <h3 class="">Room #{{ roomId }}</h3>
-      <UiSmallButton> Copy link</UiSmallButton>
+      <h4>Wait for start!</h4>
       <div class="current">
         <p class="">You are here</p>
         <span>'{{ currentUser.username }}''</span>
       </div>
     </div>
 
-    <div class="users">
+    <!-- <div class="users">
       <p>Waiting for other players...</p>
       <ul class="user-list">
         <li
@@ -31,13 +35,14 @@ const users = [{ username: "ASTRA" }];
           <IconUserPlug /> '{{ user.username }}'
         </li>
       </ul>
-    </div>
+    </div> -->
   </UiBlock>
 </template>
 <style scoped>
 .room-info {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 12px;
 }
 .users-block {

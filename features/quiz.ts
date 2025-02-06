@@ -9,11 +9,12 @@ export function useQuizFeatures() {
       const quizzes = await quizApi.getAllQuizzes();
 
       quizStore.quizzes = quizzes;
+      console.log(quizStore.quizzes);
     },
     create: async ({ title }) => {
       const newQuiz = await quizApi.createQuiz({ title });
 
-      quizStore.addQuiz(newQuiz);
+      quizStore.quiz.addQuiz(newQuiz);
 
       return newQuiz;
     },
@@ -25,12 +26,13 @@ export function useQuizFeatures() {
     getAll: async (quizStackId: number) => {
       const questions = await quizApi.getAllQuestionsByQuizId({ quizStackId });
 
-      const quiz = quizStore.getQuiz(quizStackId);
+      const quiz = quizStore.quiz.getQuiz(quizStackId);
     },
 
     create: async ({ quizStackId, text }) => {
       const newQuestion = await quizApi.createQuestion({ quizStackId, text });
-      quizStore.addQuestion(quizStackId, newQuestion);
+
+      quizStore.question.addQuestion(newQuestion);
     },
 
     update: async () => {},
@@ -39,7 +41,18 @@ export function useQuizFeatures() {
 
   const option = {
     getAll: async () => {},
-    create: async ({ questionId, text, correct = false }) => {},
+    create: async ({ quizStackId, questionId, text, correct = false }) => {
+      const option = await quizApi.createOption({
+        questionId,
+        text,
+        correct,
+      });
+
+      if (quizStore.currentQuestion.id === questionId) {
+        quizStore.currentQuestion.options.push(option);
+      }
+      quizStore.option.addOption(quizStackId, option);
+    },
     update: async () => {},
     delete: async () => {},
   };
