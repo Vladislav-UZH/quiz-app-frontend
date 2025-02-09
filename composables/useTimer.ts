@@ -8,7 +8,6 @@ export default function ({
   let timerId: NodeJS.Timeout | null;
 
   const startTimer = () => {
-    // Prevent multiple intervals from being set
     if (!timerId) {
       timerId = setInterval(() => {
         if (reverse) {
@@ -33,7 +32,6 @@ export default function ({
     startTimer();
   }
 
-  // Clean up when the component using this composable is unmounted
   onUnmounted(() => {
     stopTimer();
   });

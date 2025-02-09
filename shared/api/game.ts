@@ -32,7 +32,7 @@ export class GameApi {
       currentQuestionId,
       currentQuestionStartTime,
     };
-    return this.baseApi.POST({
+    return this.baseApi.POST<{}>({
       path: "/api/quiz-sessions/question-start",
       data: question,
     });
@@ -41,10 +41,10 @@ export class GameApi {
     const question = {
       id: roomId,
       currentQuestionId,
-      finishTime,
+      finish_time: finishTime,
       correct,
     };
-    return this.baseApi.POST({
+    return this.baseApi.POST<{}>({
       path: "/api/quiz-sessions/question-end",
       data: question,
     });

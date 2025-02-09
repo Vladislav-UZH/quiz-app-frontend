@@ -1,26 +1,30 @@
 <script lang="ts" setup>
 import { useQuizFeatures } from "~/features/quiz";
 
-definePageMeta({ layout: "game" });
+definePageMeta({ layout: "game", middleware: "auth" });
+
 const route = useRoute();
 const router = useRouter();
 const { $api } = useNuxtApp();
 const quizApi = $api.quiz;
 const gameApi = $api.game;
 
-const { minutesToSeconds, getPrettyTime } = useTimeHelper();
+const { minutesToSeconds, getPrettyTime, sleep } = useTimeHelper();
 const quizStore = useQuizStore();
 const quizFeatures = useQuizFeatures();
 
-const DEFAULT_QUIZ_TIME = minutesToSeconds(2);
+function getQuizDefaultTime(questionsLength: number) {
+  return minutesToSeconds(questionsLength * 1);
+}
+
 const initialTime = ref(1);
+const isReady = ref(false);
+const currentQuestionIdx = ref(0);
 
 const { time, startTimer, stopTimer } = useTimer({
   initialTime: initialTime.value,
   reverse: true,
-  // autoStart: true,
 });
-const isReady = ref(false);
 
 onBeforeMount(async () => {
   try {
@@ -30,34 +34,133 @@ onBeforeMount(async () => {
 
     quizStore.question.updateCurrentQuestion(
       ourQuiz.id,
-      quizStore.currentQuiz.questions[0]
+      quizStore.currentQuiz.questions[currentQuestionIdx.value]
     );
+
+    alert(quizStore.currentQuestion.id);
+    const questionsQuantity = quizStore.currentQuiz?.questions?.length;
+
     if (route.path.includes("null")) {
       const game = await gameApi.createGame({
-        quizTime: DEFAULT_QUIZ_TIME,
+        quizTime: getQuizDefaultTime(questionsQuantity),
         quizStackId: ourQuiz.id,
       });
 
       router.push(`/room/${game.id}/quiz/${ourQuiz.id}`);
     }
-
-    time.value =
-      DEFAULT_QUIZ_TIME / quizStore.currentQuiz?.questions?.length || 1;
-
-    isReady.value = true;
-
-    startTimer();
+    await startGame();
   } catch (e) {
     console.log(e);
   }
 });
 
-watchEffect(() => {
-  console.log(quizStore.currentQuiz.questions.length);
-  if (time.value <= 0 && quizStore.currentQuiz.questions.length) {
-    stopTimer();
+watch(isReady, async () => {
+  const questionsQuantity = quizStore.currentQuiz?.questions?.length;
+  const timeForQuestion =
+    getQuizDefaultTime(questionsQuantity) / questionsQuantity;
+
+  try {
+    if (isReady) {
+      time.value = timeForQuestion;
+    }
+  } catch (e) {
+    console.log(e);
   }
 });
+
+async function startQuestion(id: number) {
+  try {
+    const question = await quizApi.getQuestion(id);
+    const currentQuestionStartTime = Math.floor(Date.now() / 1000);
+
+    const startedQuestion = await gameApi.startQuestion({
+      roomId: route.params.roomId,
+      currentQuestionId: question.id,
+      currentQuestionStartTime,
+    });
+
+    return startedQuestion;
+  } catch (e) {
+    console.log(e);
+  }
+}
+async function endQuestion({ questionId, correct }) {
+  try {
+    const finishTime = Math.floor(Date.now() / 1000);
+
+    console.log(questionId);
+    const endedQuestion = await gameApi.endQuestion({
+      roomId: route.params.roomId,
+      currentQuestionId: questionId,
+      finishTime,
+      correct,
+    });
+
+    return endedQuestion;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+async function loadNextQuestion() {
+  currentQuestionIdx.value = currentQuestionIdx.value + 1;
+  const noQuestions =
+    currentQuestionIdx.value > quizStore.currentQuiz.questions.length - 1;
+
+  if (noQuestions) {
+    router.push(`/room/${route.params.roomId}/result`);
+  }
+
+  isReady.value = false;
+
+  clearTimeout(await sleep(3000));
+
+  const question = quizStore.currentQuiz.questions[currentQuestionIdx.value];
+  if (question.id) {
+    isReady.value = true;
+
+    await startQuestion(question.id);
+  }
+}
+
+async function startGame() {
+  try {
+    const firstQuestion = quizStore.currentQuiz.questions[0];
+
+    if (!currentQuestionIdx.value) {
+      isReady.value = true;
+      await startQuestion(firstQuestion.id);
+      startTimer();
+
+      watchEffect(async () => {
+        if (time.value <= 0 && quizStore.currentQuiz.questions.length) {
+          await endQuestion({
+            questionId:
+              quizStore.currentQuiz.questions[currentQuestionIdx.value].id,
+            correct: false,
+          });
+          stopTimer();
+
+          await loadNextQuestion();
+        }
+      });
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+async function handleChooseOption({
+  correct,
+  questionId,
+}: {
+  id: number;
+  correct: boolean;
+  questionId: number;
+}) {
+  await endQuestion({ questionId, correct });
+  await loadNextQuestion();
+}
 </script>
 
 <template>
@@ -69,14 +172,19 @@ watchEffect(() => {
 
         <ul class="options-list">
           <li
-            v-for="(option, index) in quizStore.currentQuestion.options"
-            :key="index"
-            class="options-item"
+            v-for="option in quizStore.currentQuestion.options"
+            :key="option.id"
           >
-            <p class="text__title">{{ option.text }}</p>
+            <button
+              type="button"
+              class="text__title options-item"
+              @click="handleChooseOption(option)"
+            >
+              {{ option.id }} {{ option.text }}
+            </button>
           </li>
         </ul>
-        <div class="time-container" :class="{ blinking: time < 30 }">
+        <div class="time-container" :class="{ blinking: time < 15 }">
           <span class="time-label">Time:</span>
           <h2>{{ getPrettyTime(time) }}</h2>
         </div>
@@ -117,6 +225,7 @@ watchEffect(() => {
   -moz-box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.75);
   box-shadow: 0px 2px 2px 2px rgba(54, 54, 54, 0.75);
   background-color: rgb(32, 117, 214);
+  color: var(--primary-text-color);
 
   &:hover {
     opacity: 0.5;

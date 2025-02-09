@@ -13,10 +13,6 @@ export default function () {
   }
 
   function getPrettyTime(totalSeconds: number): string {
-    console.log(totalSeconds);
-    // if (!totalSeconds) {
-    //   return "00:00";
-    // }
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = Math.floor(totalSeconds % 60);
 
@@ -25,5 +21,13 @@ export default function () {
 
     return `${minutesString}:${secondsString}`;
   }
-  return { secondsToMinutes, minutesToSeconds, getPrettyTime };
+
+  async function sleep(sleepTimeMs: number): Promise<NodeJS.Timeout> {
+    let id: NodeJS.Timeout | null = null;
+
+    return new Promise((resolve) => {
+      id = setTimeout(() => resolve(id as NodeJS.Timeout), sleepTimeMs);
+    });
+  }
+  return { secondsToMinutes, minutesToSeconds, getPrettyTime, sleep };
 }
