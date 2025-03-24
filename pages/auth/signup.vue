@@ -1,5 +1,20 @@
 <script setup lang="ts">
+import { useForm } from "vee-validate";
+import { useAuthFeatures } from "~/features/auth";
+
 definePageMeta({ layout: "auth", middleware: ["guest"] });
+
+const router = useRouter();
+const { handleSubmit } = useForm();
+const { register } = useAuthFeatures();
+
+const handleRegister = handleSubmit(async ({ username, password }) => {
+  try {
+    await register({ username, password });
+  } catch (e) {
+    alert("Something went wrong!");
+  }
+});
 </script>
 <template>
   <UiBlock class="box">
@@ -7,7 +22,7 @@ definePageMeta({ layout: "auth", middleware: ["guest"] });
       <h2>Create an account</h2>
       <p class="description">We're excited to have you on board</p>
     </div>
-    <form class="form">
+    <form class="form" @submit="handleRegister">
       <UiField
         name="username"
         type="text"

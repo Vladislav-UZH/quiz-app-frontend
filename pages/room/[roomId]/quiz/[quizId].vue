@@ -37,7 +37,6 @@ onBeforeMount(async () => {
       quizStore.currentQuiz.questions[currentQuestionIdx.value]
     );
 
-    alert(quizStore.currentQuestion.id);
     const questionsQuantity = quizStore.currentQuiz?.questions?.length;
 
     if (route.path.includes("null")) {
@@ -116,6 +115,7 @@ async function loadNextQuestion() {
   clearTimeout(await sleep(3000));
 
   const question = quizStore.currentQuiz.questions[currentQuestionIdx.value];
+  quizStore.question.updateCurrentQuestion(quizStore.currentQuiz.id, question);
   if (question.id) {
     isReady.value = true;
 
@@ -168,6 +168,10 @@ async function handleChooseOption({
     <!-- ROUND -->
     <template v-if="isReady">
       <div class="round-container">
+        <div>
+          <p>Question</p>
+          <h3 class="headline--xl">{{ quizStore.currentQuestion.text }}</h3>
+        </div>
         <h4 class="headline--xl">Choose correct option</h4>
 
         <ul class="options-list">
