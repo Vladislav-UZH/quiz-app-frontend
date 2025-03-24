@@ -19,7 +19,11 @@ export function useQuizFeatures() {
       return newQuiz;
     },
     update: async () => {},
-    delete: async () => {},
+    delete: async (id) => {
+      await quizApi.deleteQuiz({ id });
+
+      quizStore.quiz.deleteQuiz(id);
+    },
   };
 
   const question = {

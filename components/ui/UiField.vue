@@ -10,6 +10,12 @@ const props = defineProps({
 });
 
 const field = useField(() => props.name);
+
+const emit = defineEmits(["upd"]);
+
+watchEffect(() => {
+  emit("upd", field.value.value);
+});
 </script>
 <template>
   <label class="label">

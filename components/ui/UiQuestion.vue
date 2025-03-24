@@ -1,9 +1,25 @@
 <script lang="ts" setup>
-defineProps<{
+const props = defineProps<{
+  id: number;
   index: number;
   isOpen: boolean;
   text: string;
 }>();
+
+const { $api } = useNuxtApp();
+const quizStore = useQuizStore();
+const quizApi = $api.quiz;
+async function handleDelete() {
+  try {
+    await quizApi.deleteQuestion(props.id);
+
+    quizStore.currentQuiz.questions = quizStore.currentQuiz.questions.filter(
+      (q) => q.id !== props.id
+    );
+  } catch (e) {
+    console.log(e);
+  }
+}
 </script>
 
 <template>
@@ -16,7 +32,8 @@ defineProps<{
         </p>
       </div>
     </div>
-    <UiImage />
+    <UiButton @click="handleDelete">Delete</UiButton>
+    <!-- <UiImage /> -->
   </div>
 </template>
 

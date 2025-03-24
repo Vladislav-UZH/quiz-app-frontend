@@ -161,6 +161,9 @@ async function handleChooseOption({
   await endQuestion({ questionId, correct });
   await loadNextQuestion();
 }
+
+const getRandomHex = () =>
+  "#" + ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, "0");
 </script>
 
 <template>
@@ -184,7 +187,7 @@ async function handleChooseOption({
               class="text__title options-item"
               @click="handleChooseOption(option)"
             >
-              {{ option.id }} {{ option.text }}
+              {{ option.text }}
             </button>
           </li>
         </ul>

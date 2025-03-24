@@ -2,7 +2,29 @@
 import IconTrue from "../../../../public/svg/icon_true.svg";
 import IconFalse from "../../../../public/svg/icon_false.svg";
 
-defineProps<{ text: string; isTrue: boolean }>();
+const props = defineProps<{
+  data: object;
+  id: number;
+  text: string;
+  isTrue: boolean;
+}>();
+
+const { $api } = useNuxtApp();
+const quizStore = useQuizStore();
+const quizApi = $api.quiz;
+async function handleDelete() {
+  try {
+    await quizApi.deleteOption(props.id);
+
+    const options = await quizApi.getAllOptionsByQuestionId(props.data);
+    const idx = quizStore.currentQuiz.questions.findIndex(
+      (q) => q.id === props.data.questionId
+    );
+    quizStore.currentQuiz.questions[idx].options = options;
+  } catch (e) {
+    console.log(e);
+  }
+}
 </script>
 
 <template>
@@ -11,10 +33,13 @@ defineProps<{ text: string; isTrue: boolean }>();
       <span class="point-circle"></span>
       <p class="point-text">{{ text }}</p>
     </div>
-    <span>
-      <IconTrue v-if="isTrue" class="icon-true" viewBox="0 0 20 20" />
-      <IconFalse v-else class="icon-false" width="20" height="20" />
-    </span>
+    <div style="display: flex; align-items: center; gap: 40px">
+      <UiButton @click="handleDelete">Delete</UiButton>
+      <span>
+        <IconTrue v-if="isTrue" class="icon-true" viewBox="0 0 20 20" />
+        <IconFalse v-else class="icon-false" width="20" height="20" />
+      </span>
+    </div>
   </div>
 </template>
 

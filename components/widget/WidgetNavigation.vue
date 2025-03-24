@@ -3,7 +3,7 @@
 <template>
   <nav class="vertical-nav links">
     <nuxt-link class="link" to="/dashboard/quizzes">My quizzes</nuxt-link>
-    <nuxt-link class="link" to="/dashboard/library">Library</nuxt-link>
+    <!-- <nuxt-link class="link" to="/dashboard/library">Library</nuxt-link> -->
   </nav>
 </template>
 

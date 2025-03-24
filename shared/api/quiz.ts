@@ -36,7 +36,13 @@ export class QuizApi {
       path: `/api/quizzes/${id}`,
     });
   }
-  //   async deleteQuiz() {}
+  async deleteQuiz(id: number) {
+    return this.baseApi.DELETE({ path: `/api/quizzes/${id}` });
+  }
+
+  async updateQuiz({ id, title }) {
+    return this.baseApi.PUT({ path: `/api/quizzes/${id}`, data: { title } });
+  }
 
   async createQuestion({ quizStackId, text }) {
     return this.baseApi.POST<Question>({
@@ -55,7 +61,9 @@ export class QuizApi {
       path: `/api/questions/${id}`,
     });
   }
-  //   async deleteQuestion() {}
+  async deleteQuestion(id) {
+    return this.baseApi.DELETE({ path: `/api/questions/${id}` });
+  }
 
   async createOption({ questionId, text, correct }) {
     return this.baseApi.POST<Option>({
@@ -70,5 +78,7 @@ export class QuizApi {
   }
 
   //   async getOption() {}
-  //   async deleteOption() {}
+  async deleteOption(id) {
+    return this.baseApi.DELETE({ path: `/api/options/${id}` });
+  }
 }

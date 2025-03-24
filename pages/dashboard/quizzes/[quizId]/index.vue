@@ -102,6 +102,7 @@ async function handleCreateOption({ optionText, optionCorrect }) {
             :key="index"
           >
             <UiQuestion
+              :id="question.id"
               :index="index + 1"
               :text="question.text"
               :isOpen="getIsCurrent(question.id)"
@@ -127,7 +128,12 @@ async function handleCreateOption({ optionText, optionCorrect }) {
 
               <ul class="options-list">
                 <li v-for="(option, index) in question.options" :key="index">
-                  <UiOption :text="option.text" :isTrue="option.correct" />
+                  <UiOption
+                    :data="option"
+                    :id="option.id"
+                    :text="option.text"
+                    :isTrue="option.correct"
+                  />
                 </li>
               </ul>
             </div>
