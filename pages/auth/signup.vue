@@ -5,16 +5,16 @@ import { useAuthFeatures } from "~/features/auth";
 definePageMeta({ layout: "auth", middleware: ["guest"] });
 
 const router = useRouter();
-const { handleSubmit } = useForm();
 const { register } = useAuthFeatures();
 
-const handleRegister = handleSubmit(async ({ username, password }) => {
+const handleRegister = async ({ username, password }) => {
   try {
+    console.log(password);
     await register({ username, password });
   } catch (e) {
     alert("Something went wrong!");
   }
-});
+};
 </script>
 <template>
   <UiBlock class="box">
@@ -22,7 +22,7 @@ const handleRegister = handleSubmit(async ({ username, password }) => {
       <h2>Create an account</h2>
       <p class="description">We're excited to have you on board</p>
     </div>
-    <form class="form" @submit="handleRegister">
+    <UiForm class="form" @form="handleRegister">
       <UiField
         name="username"
         type="text"
@@ -48,8 +48,8 @@ const handleRegister = handleSubmit(async ({ username, password }) => {
         placeholder="Confirm Password"
       />
 
-      <UiButton>Start</UiButton>
-    </form>
+      <UiButton type="submit">Start</UiButton>
+    </UiForm>
     <nuxt-link class="sign-up-link" to="/auth/signin">
       Already have an account? <span class="sign-up">Log In</span>
     </nuxt-link>
